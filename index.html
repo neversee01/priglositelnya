@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Тебе приглашение ♡</title>
+<meta name="theme-color" content="#fde8e4">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Marck+Script&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --rose:#f2a7b8;
+  --rose-deep:#e57f9a;
+  --lavender:#e5dbf6;
+  --ink:#6e4b52;
+  --ink-soft:#a08589;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{
+  font-family:'Montserrat',system-ui,-apple-system,'Segoe UI',sans-serif;
+  color:var(--ink);
+  background:linear-gradient(160deg,#fff1ee 0%,#fde4ea 35%,#ebe2f8 70%,#dff3ec 100%);
+  background-attachment:fixed;
+  overflow:hidden;
+}
+
+/* ---------- фон ---------- */
+.bg{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.blob{position:absolute;border-radius:50%;filter:blur(60px);opacity:.55;animation:drift 18s ease-in-out infinite alternate}
+.blob.b1{width:340px;height:340px;background:#ffd3dc;left:-90px;top:-70px}
+.blob.b2{width:300px;height:300px;background:#dccff5;right:-80px;top:35%;animation-delay:-6s}
+.blob.b3{width:320px;height:320px;background:#cdeedd;left:15%;bottom:-120px;animation-delay:-11s}
+@keyframes drift{to{transform:translate(40px,-30px) scale(1.12)}}
+
+.float{position:absolute;bottom:-40px;opacity:0;animation:rise linear infinite;color:var(--rose)}
+@keyframes rise{
+  0%{transform:translateY(0) rotate(0);opacity:0}
+  10%{opacity:.5}
+  90%{opacity:.35}
+  100%{transform:translateY(-110vh) rotate(40deg);opacity:0}
+}
+
+/* ---------- сцена ---------- */
+.scene{
+  position:fixed;inset:0;z-index:1;
+  display:flex;overflow-y:auto;overflow-x:hidden;
+  padding:max(20px,env(safe-area-inset-top)) 16px max(24px,env(safe-area-inset-bottom));
+}
+.scene > *{margin:auto}
+
+/* ---------- конверт ---------- */
+.intro{
+  display:flex;flex-direction:column;align-items:center;gap:34px;
+  transition:opacity .7s ease,transform .7s ease,filter .7s ease;
+}
+.intro.gone{opacity:0;transform:translateY(-30px) scale(1.08);filter:blur(6px);pointer-events:none}
+.intro-title{
+  font-family:'Marck Script',cursive;font-size:clamp(34px,9vw,46px);
+  color:var(--rose-deep);text-align:center;line-height:1.1;
+  text-shadow:0 2px 0 rgba(255,255,255,.7);
+  transition:opacity .5s;
+}
+.opened ~ .intro-title,.intro.is-open .intro-title{opacity:0}
+
+.envelope{
+  --w:min(84vw,360px);
+  position:relative;width:var(--w);height:calc(var(--w)*.68);
+  perspective:1200px;cursor:pointer;outline:none;
+  animation:bob 4.5s ease-in-out infinite;
+  margin-top:calc(var(--w)*.3);
+}
+.envelope.opened{animation:none;cursor:default}
+.envelope:focus-visible .env-back{box-shadow:0 0 0 4px rgba(229,127,154,.5)}
+@keyframes bob{50%{transform:translateY(-10px)}}
+
+.env-shadow{
+  position:absolute;left:8%;right:8%;bottom:-26px;height:22px;border-radius:50%;
+  background:radial-gradient(ellipse,rgba(229,127,154,.38),transparent 70%);
+  filter:blur(4px);
+}
+.env-back{
+  position:absolute;inset:0;border-radius:10px;z-index:0;
+  background:linear-gradient(180deg,#efb0c1,#f2bccb);
+  box-shadow:0 22px 40px -18px rgba(229,127,154,.7);
+  transition:box-shadow .3s;
+}
+
+.letter{
+  position:absolute;left:7%;width:86%;top:7%;height:88%;z-index:2;
+  background:linear-gradient(180deg,#fffdfa,#fff6f2);
+  border-radius:8px;padding:9% 9% 0;
+  box-shadow:0 4px 14px rgba(160,100,115,.18);
+  transition:transform 1.05s cubic-bezier(.3,.7,.2,1) .6s;
+  text-align:center;
+}
+.letter .l-script{font-family:'Marck Script',cursive;font-size:clamp(22px,6vw,28px);color:var(--rose-deep)}
+.letter .l-line{height:5px;border-radius:3px;background:#f6dfe4;margin:12px auto 0;width:78%}
+.letter .l-line:nth-child(3){width:60%}
+.letter .l-line:nth-child(4){width:70%}
+.opened .letter{transform:translateY(-58%)}
+
+.pocket{position:absolute;inset:0;z-index:3;pointer-events:none}
+.pocket div{position:absolute;inset:0;border-radius:10px}
+.pocket .pl{clip-path:polygon(0 0,50% 55%,0 100%);background:linear-gradient(90deg,#f8c7d3,#f4b8c7)}
+.pocket .pr{clip-path:polygon(100% 0,50% 55%,100% 100%);background:linear-gradient(270deg,#f8c7d3,#f2b1c2)}
+.pocket .pb{clip-path:polygon(0 100%,50% 55%,100% 100%);background:linear-gradient(0deg,#fcdce3,#f8cad5)}
+
+.flap{
+  position:absolute;left:0;top:0;width:100%;height:55%;z-index:5;
+  transform-origin:50% 0;transform-style:preserve-3d;
+  transition:transform .95s cubic-bezier(.45,.05,.25,1),z-index 0s .45s;
+}
+.flap .face{
+  position:absolute;inset:0;clip-path:polygon(0 0,100% 0,50% 100%);
+  -webkit-backface-visibility:hidden;backface-visibility:hidden;
+}
+.flap .front{background:linear-gradient(180deg,#f7bccb,#f2a5b9)}
+.flap .back{background:linear-gradient(180deg,#fde9ed,#fff4f6);transform:rotateX(180deg)}
+.opened .flap{transform:rotateX(180deg);z-index:1}
+
+.seal{
+  position:absolute;left:50%;top:55%;width:17%;aspect-ratio:1;z-index:6;
+  transform:translate(-50%,-50%);border-radius:50%;
+  display:grid;place-items:center;
+  background:radial-gradient(circle at 35% 30%,#fbb7c8,#e0728f 72%);
+  box-shadow:0 6px 14px -3px rgba(190,70,100,.55),inset 0 -3px 5px rgba(150,40,70,.25),inset 0 2px 4px rgba(255,255,255,.5);
+  transition:transform .5s ease,opacity .4s ease;
+  animation:beat 1.8s ease-in-out infinite;
+}
+.seal svg{width:48%;height:48%;fill:#fff;filter:drop-shadow(0 1px 1px rgba(150,40,70,.4))}
+.opened .seal{animation:none;opacity:0;transform:translate(-50%,-50%) scale(.3) rotate(50deg)}
+@keyframes beat{
+  0%,100%{transform:translate(-50%,-50%) scale(1)}
+  15%{transform:translate(-50%,-50%) scale(1.12)}
+  30%{transform:translate(-50%,-50%) scale(1)}
+  45%{transform:translate(-50%,-50%) scale(1.08)}
+}
+.hint{
+  position:absolute;left:0;right:0;top:calc(100% + 38px);text-align:center;
+  font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft);
+  animation:pulse 2.2s ease-in-out infinite;transition:opacity .4s;white-space:nowrap;
+}
+.opened .hint{opacity:0;animation:none}
+@keyframes pulse{50%{opacity:.4}}
+
+/* ---------- карточка ---------- */
+.card{
+  position:relative;width:min(100%,460px);
+  padding:34px 26px 28px;border-radius:30px;
+  background:rgba(255,255,255,.7);
+  -webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);
+  border:1px solid rgba(255,255,255,.95);
+  box-shadow:0 30px 60px -28px rgba(229,127,154,.55),0 4px 14px rgba(229,127,154,.12);
+  text-align:center;
+  opacity:0;visibility:hidden;transform:translateY(26px) scale(.96);
+  transition:opacity .8s ease,transform .8s cubic-bezier(.2,.8,.2,1),visibility 0s .8s;
+}
+.card.show{opacity:1;visibility:visible;transform:none;transition-delay:0s}
+.card::before{
+  content:"";position:absolute;inset:9px;border-radius:22px;pointer-events:none;
+  border:1.5px dashed rgba(229,127,154,.32);
+}
+.rv{opacity:0}
+.card.show .rv{animation:up .75s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i,0)*.09s + .25s)}
+@keyframes up{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+
+.cup{
+  width:84px;height:84px;margin:0 auto 10px;border-radius:50%;
+  display:grid;place-items:center;
+  background:linear-gradient(135deg,#ffe3e8,#e9defa);
+  box-shadow:0 10px 22px -10px rgba(229,127,154,.7),inset 0 0 0 4px rgba(255,255,255,.7);
+}
+.cup svg{width:58px;height:58px;overflow:visible}
+.steam{fill:none;stroke:#e8a3b5;stroke-width:2.2;stroke-linecap:round;opacity:0;animation:steam 3s ease-in-out infinite}
+.steam.s2{animation-delay:.9s}.steam.s3{animation-delay:1.8s}
+@keyframes steam{
+  0%{opacity:0;transform:translateY(6px)}
+  40%{opacity:.9}
+  100%{opacity:0;transform:translateY(-8px)}
+}
+
+.eyebrow{font-size:12px;letter-spacing:.24em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:6px}
+h1{
+  font-family:'Marck Script',cursive;font-weight:400;
+  font-size:clamp(44px,13vw,58px);line-height:1.05;margin-bottom:12px;
+  background:linear-gradient(90deg,#e8849f,#b9a0e6);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  padding:2px 4px 8px;
+}
+h1.done-title{font-size:clamp(34px,10vw,48px)}
+.lead{font-size:15px;line-height:1.7;color:var(--ink);max-width:340px;margin:0 auto 22px}
+.lead b{font-weight:600;color:var(--rose-deep)}
+
+.when{
+  display:flex;align-items:center;gap:16px;justify-content:center;
+  padding:14px 18px;margin-bottom:24px;border-radius:20px;
+  background:linear-gradient(135deg,rgba(255,227,232,.8),rgba(233,222,250,.8));
+}
+.leaf{
+  width:58px;border-radius:14px;overflow:hidden;background:#fff;
+  box-shadow:0 8px 16px -8px rgba(229,127,154,.7);flex:none;
+}
+.leaf .mon{display:block;background:linear-gradient(135deg,#f4aebf,#e57f9a);color:#fff;font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;padding:4px 0}
+.leaf .num{display:block;font-size:28px;font-weight:600;color:var(--ink);padding:3px 0 6px;line-height:1.1}
+.when-text{text-align:left;line-height:1.5}
+.when-text b{display:block;font-size:16px;font-weight:600}
+.when-text span{font-size:14px;color:var(--ink-soft)}
+
+.label{font-size:13px;font-weight:500;letter-spacing:.06em;color:var(--ink-soft);margin-bottom:12px}
+.slots{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.slot{
+  font:500 15px 'Montserrat',system-ui,sans-serif;color:var(--ink);
+  padding:13px 0;border-radius:15px;cursor:pointer;
+  border:1.5px solid rgba(229,127,154,.28);background:rgba(255,255,255,.85);
+  transition:transform .25s,box-shadow .25s,background .25s,color .25s,border-color .25s;
+}
+.slot:hover{transform:translateY(-2px);border-color:var(--rose);box-shadow:0 8px 16px -8px rgba(229,127,154,.6)}
+.slot[aria-checked="true"]{
+  background:linear-gradient(135deg,#f6b4c4,#e98aa4);color:#fff;border-color:transparent;
+  box-shadow:0 10px 20px -8px rgba(229,127,154,.8);transform:translateY(-2px) scale(1.04);
+}
+.slot:focus-visible,.btn:focus-visible,.link:focus-visible{outline:3px solid rgba(185,160,230,.7);outline-offset:2px}
+
+.btn{
+  width:100%;margin-top:24px;padding:17px 20px;border:0;border-radius:18px;cursor:pointer;
+  font:600 15px 'Montserrat',system-ui,sans-serif;letter-spacing:.02em;color:#fff;
+  background:linear-gradient(135deg,#f4aebf,#e57f9a);
+  box-shadow:0 16px 28px -12px rgba(229,127,154,.9);
+  transition:transform .25s,box-shadow .25s,background .3s,color .3s;
+}
+.btn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 20px 32px -12px rgba(229,127,154,.95)}
+.btn:active:not(:disabled){transform:scale(.98)}
+.btn:disabled{background:linear-gradient(135deg,#f5eaee,#eee6f1);color:#b9a5ad;box-shadow:none;cursor:not-allowed}
+.btn.ghost{background:rgba(255,255,255,.85);color:var(--rose-deep);box-shadow:inset 0 0 0 1.5px rgba(229,127,154,.4);margin-top:12px}
+.btn.ghost:hover:not(:disabled){box-shadow:inset 0 0 0 1.5px var(--rose-deep),0 10px 18px -10px rgba(229,127,154,.6)}
+.link{
+  display:inline-block;margin-top:16px;background:none;border:0;cursor:pointer;
+  font:500 13px 'Montserrat',system-ui,sans-serif;color:var(--ink-soft);text-decoration:underline;text-underline-offset:3px;
+}
+
+/* ---------- успех ---------- */
+.view[hidden]{display:none}
+.big-heart{
+  width:92px;height:92px;margin:0 auto 6px;display:grid;place-items:center;
+  border-radius:50%;background:linear-gradient(135deg,#ffe3e8,#e9defa);
+  box-shadow:0 12px 24px -10px rgba(229,127,154,.7),inset 0 0 0 4px rgba(255,255,255,.7);
+  animation:beat2 1.6s ease-in-out infinite;
+}
+.big-heart svg{width:46px;height:46px;fill:#ec8aa4}
+@keyframes beat2{0%,100%{transform:scale(1)}20%{transform:scale(1.1)}40%{transform:scale(1)}60%{transform:scale(1.06)}}
+.done-time{
+  display:inline-block;margin:6px 0 4px;padding:8px 22px;border-radius:16px;
+  font-size:30px;font-weight:600;color:#fff;letter-spacing:.04em;
+  background:linear-gradient(135deg,#f4aebf,#e57f9a);
+  box-shadow:0 12px 22px -10px rgba(229,127,154,.9);
+}
+.done-sub{font-size:15px;line-height:1.7;margin-bottom:6px}
+.done-note{font-size:14px;color:var(--ink-soft);margin-top:10px}
+
+.toast{
+  position:fixed;left:50%;bottom:max(26px,env(safe-area-inset-bottom));z-index:50;
+  transform:translate(-50%,30px);opacity:0;pointer-events:none;
+  padding:12px 20px;border-radius:999px;font-size:14px;color:#fff;
+  background:rgba(110,75,82,.92);box-shadow:0 10px 24px -8px rgba(110,75,82,.6);
+  transition:opacity .35s,transform .35s;white-space:nowrap;
+}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+
+/* ---------- конфетти ---------- */
+.confetti{position:fixed;inset:0;z-index:40;pointer-events:none;overflow:hidden}
+.confetti i{
+  position:absolute;top:-30px;font-style:normal;line-height:1;
+  animation:fall linear forwards;
+}
+@keyframes fall{
+  0%{transform:translate(0,0) rotate(0);opacity:1}
+  85%{opacity:1}
+  100%{transform:translate(var(--dx),110vh) rotate(var(--rot));opacity:0}
+}
+
+@media (max-width:340px){
+  .slots{grid-template-columns:repeat(3,1fr)}
+  .card{padding:30px 18px 24px}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;transition-delay:0s!important}
+  .float{display:none}
+}
+</style>
+</head>
+<body>
+
+<div class="bg" aria-hidden="true">
+  <div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
+  <div id="floats"></div>
+</div>
+
+<main class="scene">
+
+  <!-- КОНВЕРТ -->
+  <section class="intro" id="intro">
+    <div class="intro-title" id="introTitle">Тебе письмо</div>
+    <div class="envelope" id="envelope" role="button" tabindex="0" aria-label="Открыть конверт">
+      <div class="env-shadow"></div>
+      <div class="env-back"></div>
+      <div class="letter">
+        <div class="l-script">Для тебя ♡</div>
+        <div class="l-line"></div><div class="l-line"></div><div class="l-line"></div>
+      </div>
+      <div class="pocket"><div class="pl"></div><div class="pr"></div><div class="pb"></div></div>
+      <div class="flap"><div class="face front"></div><div class="face back"></div></div>
+      <div class="seal">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.6-9.3C.9 8.2 3 5 6.2 5c2 0 3.5 1.1 4.3 2.5h3C14.3 6.1 15.8 5 17.8 5 21 5 23.1 8.2 21.6 11.7 19.5 16.4 12 21 12 21z"/></svg>
+      </div>
+      <div class="hint">Нажми, чтобы открыть</div>
+    </div>
+  </section>
+
+  <!-- ПРИГЛАШЕНИЕ -->
+  <article class="card" id="card" aria-live="polite">
+
+    <div class="view" id="viewForm">
+      <div class="cup rv" style="--i:0">
+        <svg viewBox="0 0 64 64" aria-hidden="true">
+          <path class="steam s1" d="M23 20c-3-3.5 3-6 0-10"/>
+          <path class="steam s2" d="M31 20c-3-3.5 3-6 0-10"/>
+          <path class="steam s3" d="M39 20c-3-3.5 3-6 0-10"/>
+          <ellipse cx="32" cy="55" rx="23" ry="4.5" fill="#f3c9d2"/>
+          <path d="M47 31h3.5a6.5 6.5 0 0 1 0 13H45" fill="none" stroke="#ea9db1" stroke-width="3" stroke-linecap="round"/>
+          <path d="M13 27h34v10c0 9.5-7.5 16-17 16s-17-6.5-17-16z" fill="#fff" stroke="#ea9db1" stroke-width="2.5" stroke-linejoin="round"/>
+          <ellipse cx="30" cy="27" rx="17" ry="3.3" fill="#dcb6a4"/>
+          <path d="M23 38c1.5 4 4.5 6 7 6" fill="none" stroke="#fbd5de" stroke-width="3" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <p class="eyebrow rv" style="--i:1" id="eyebrow">специально для тебя</p>
+      <h1 class="rv" style="--i:2">Сходим на кофе?</h1>
+      <p class="lead rv" style="--i:3">
+        Приглашаю тебя в кофейню <b>«<span class="place"></span>»</b> — выпьем что-нибудь вкусное и просто хорошо проведём время.
+      </p>
+
+      <div class="when rv" style="--i:4">
+        <div class="leaf"><span class="mon" id="mon"></span><span class="num" id="num"></span></div>
+        <div class="when-text"><b id="whenDay"></b><span>кофейня «<span class="place"></span>»</span></div>
+      </div>
+
+      <div class="rv" style="--i:5">
+        <p class="label" id="slotsLabel">Выбери удобное время</p>
+        <div class="slots" id="slots" role="radiogroup" aria-labelledby="slotsLabel"></div>
+      </div>
+
+      <button class="btn rv" style="--i:6" id="confirm" disabled>Сначала выбери время</button>
+    </div>
+
+    <div class="view" id="viewDone" hidden>
+      <div class="big-heart">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.6-9.3C.9 8.2 3 5 6.2 5c2 0 3.5 1.1 4.3 2.5h3C14.3 6.1 15.8 5 17.8 5 21 5 23.1 8.2 21.6 11.7 19.5 16.4 12 21 12 21z"/></svg>
+      </div>
+      <h1 class="done-title">Договорились!</h1>
+      <p class="done-sub"><span id="doneWhen"></span> в</p>
+      <div class="done-time" id="doneTime"></div>
+      <p class="done-sub">в кофейне «<span class="place"></span>»</p>
+      <p class="done-note">Буду ждать с нетерпением ☕♡</p>
+      <button class="btn" id="send">Отправить ответ</button>
+      <button class="btn ghost" id="copy">Скопировать ответ</button>
+      <button class="link" id="change">Изменить время</button>
+    </div>
+
+  </article>
+</main>
+
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+/* ============ НАСТРОЙКИ (можно менять) ============ */
+const CONFIG = {
+  name:      'Ася',              // имя — появится на конверте и в приглашении
+  place:     'Брюссель',
+  dayLabel:  'Завтра, вторник',  // подпись в карточке
+  dayNum:    '3',
+  monthShort:'ноя',
+  whenText:  'Завтра, 3 ноября',
+  start:     '13:50',
+  end:       '15:00',
+  stepMin:   10
+};
+/* ================================================== */
+
+const $ = id => document.getElementById(id);
+const toMin = t => { const [h,m] = t.split(':').map(Number); return h*60+m; };
+const fmt   = m => String(Math.floor(m/60)).padStart(2,'0') + ':' + String(m%60).padStart(2,'0');
+
+let chosen = null;
+
+/* --- заполняем текст --- */
+document.querySelectorAll('.place').forEach(el => el.textContent = CONFIG.place);
+$('mon').textContent     = CONFIG.monthShort;
+$('num').textContent     = CONFIG.dayNum;
+$('whenDay').textContent = CONFIG.dayLabel;
+$('doneWhen').textContent = CONFIG.whenText;
+if (CONFIG.name) {
+  $('eyebrow').textContent = CONFIG.name + ', это для тебя';
+  $('introTitle').textContent = CONFIG.name + ', тебе письмо';
+}
+
+/* --- кнопки времени --- */
+const slotsBox = $('slots');
+for (let m = toMin(CONFIG.start); m <= toMin(CONFIG.end); m += CONFIG.stepMin) {
+  const b = document.createElement('button');
+  b.type = 'button';
+  b.className = 'slot';
+  b.setAttribute('role', 'radio');
+  b.setAttribute('aria-checked', 'false');
+  b.textContent = fmt(m);
+  b.addEventListener('click', () => selectSlot(b));
+  slotsBox.appendChild(b);
+}
+
+function selectSlot(btn) {
+  slotsBox.querySelectorAll('.slot').forEach(s => s.setAttribute('aria-checked', String(s === btn)));
+  chosen = btn.textContent;
+  const c = $('confirm');
+  c.disabled = false;
+  c.textContent = 'Да, увидимся в ' + chosen + ' ♡';
+}
+
+/* --- подтверждение --- */
+$('confirm').addEventListener('click', () => {
+  if (!chosen) return;
+  $('doneTime').textContent = chosen;
+  $('viewForm').hidden = true;
+  $('viewDone').hidden = false;
+  confetti();
+});
+$('change').addEventListener('click', () => {
+  $('viewDone').hidden = true;
+  $('viewForm').hidden = false;
+});
+
+/* --- отправка ответа --- */
+const answer = () => `Договорились! ${CONFIG.whenText} в ${chosen} встречаемся в кофейне «${CONFIG.place}» ☕♡`;
+
+$('send').addEventListener('click', async () => {
+  const text = answer();
+  if (navigator.share) {
+    try { await navigator.share({ text }); return; }
+    catch (e) { if (e && e.name === 'AbortError') return; }
+  }
+  const url = /^https?:/.test(location.href) ? location.href : ' ';
+  window.open('https://t.me/share/url?url=' + encodeURIComponent(url) + '&text=' + encodeURIComponent(text), '_blank', 'noopener');
+});
+
+$('copy').addEventListener('click', async () => {
+  const text = answer();
+  try {
+    await navigator.clipboard.writeText(text);
+  } catch (e) {
+    const ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); } catch (_) {}
+    ta.remove();
+  }
+  toast('Скопировано — вставь в чат ♡');
+});
+
+let toastTimer;
+function toast(msg) {
+  const t = $('toast');
+  t.textContent = msg;
+  t.classList.add('on');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('on'), 2200);
+}
+
+/* --- конверт --- */
+const envelope = $('envelope');
+const intro = $('intro');
+let opening = false;
+
+function openEnvelope() {
+  if (opening) return;
+  opening = true;
+  envelope.classList.add('opened');
+  intro.classList.add('is-open');
+  envelope.removeAttribute('tabindex');
+  envelope.setAttribute('aria-label', 'Конверт открыт');
+  setTimeout(() => intro.classList.add('gone'), 2300);
+  setTimeout(() => { $('card').classList.add('show'); }, 2600);
+  setTimeout(() => { intro.style.display = 'none'; }, 3400);
+}
+envelope.addEventListener('click', openEnvelope);
+envelope.addEventListener('keydown', e => {
+  if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openEnvelope(); }
+});
+
+/* --- конфетти из сердечек --- */
+function confetti() {
+  const colors = ['#f2a7b8', '#fdc9b4', '#cdbcf0', '#bfe8d4', '#f8c3d0', '#e57f9a'];
+  const box = document.createElement('div');
+  box.className = 'confetti';
+  for (let i = 0; i < 52; i++) {
+    const p = document.createElement('i');
+    p.textContent = Math.random() < .6 ? '♥' : '●';
+    p.style.left = Math.random() * 100 + '%';
+    p.style.fontSize = (10 + Math.random() * 16) + 'px';
+    p.style.color = colors[Math.floor(Math.random() * colors.length)];
+    p.style.setProperty('--dx', (Math.random() * 160 - 80) + 'px');
+    p.style.setProperty('--rot', (Math.random() * 720 - 360) + 'deg');
+    p.style.animationDuration = (3 + Math.random() * 2.5) + 's';
+    p.style.animationDelay = (Math.random() * 0.9) + 's';
+    box.appendChild(p);
+  }
+  document.body.appendChild(box);
+  setTimeout(() => box.remove(), 7000);
+}
+
+/* --- плавающие сердечки на фоне --- */
+(function () {
+  const wrap = $('floats');
+  const colors = ['#f2a7b8', '#cdbcf0', '#f8c3d0', '#bfe8d4'];
+  for (let i = 0; i < 14; i++) {
+    const s = document.createElement('span');
+    s.className = 'float';
+    s.textContent = '♥';
+    s.style.left = Math.random() * 100 + '%';
+    s.style.fontSize = (12 + Math.random() * 18) + 'px';
+    s.style.color = colors[i % colors.length];
+    s.style.animationDuration = (16 + Math.random() * 14) + 's';
+    s.style.animationDelay = (-Math.random() * 24) + 's';
+    wrap.appendChild(s);
+  }
+})();
+</script>
+</body>
+</html>
